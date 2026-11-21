@@ -15,7 +15,7 @@ public class Hooks {
 
         // 2. Tus datos
         String nombre = "FREDDY PENAGOS";
-        String codigo = "I202504051";
+        String codigo = "I202504061";
         String fechaHora = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 
         System.out.println("=====================================================");

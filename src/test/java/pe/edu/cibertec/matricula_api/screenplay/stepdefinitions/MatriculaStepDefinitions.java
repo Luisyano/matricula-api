@@ -94,7 +94,21 @@ public class MatriculaStepDefinitions {
         SerenityRest.given()
                 .header("Authorization", "Bearer " + token)
                 .get("http://localhost:8080/api/pagos?alumno=i202610001");
-        SerenityRest.lastResponse().then().body("metodo", hasItem(metodo));
-        SerenityRest.lastResponse().then().body("numeroOperacion", everyItem(startsWith("OP-")));
+        var json = SerenityRest.lastResponse().jsonPath();
+        String filtro = "find { it.idMatricula.toString() == '" + idMatricula + "' }";
+        org.hamcrest.MatcherAssert.assertThat(json.getString(filtro + ".metodo"), equalTo(metodo));
+        org.hamcrest.MatcherAssert.assertThat(json.getString(filtro + ".numeroOperacion"),
+                matchesPattern("OP-\\d{6}"));
+    }
+    @Entonces("la respuesta de matrícula cumple el esquema {string}")
+    public void laRespuestaDeMatriculaCumpleElEsquema(String esquema) {
+        SerenityRest.lastResponse().then().assertThat()
+                .body(io.restassured.module.jsv.JsonSchemaValidator
+                        .matchesJsonSchemaInClasspath("schemas/" + esquema));
+    }
+    @Entonces("la matrícula tiene fecha de pago")
+    public void laMatriculaTieneFechaDePago() {
+        String fecha = SerenityRest.lastResponse().jsonPath().getString("fechaPago");
+        org.hamcrest.MatcherAssert.assertThat(fecha, not(emptyOrNullString()));
     }
 }

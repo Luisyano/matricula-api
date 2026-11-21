@@ -14,12 +14,15 @@ Característica: Matrícula del alumno
     Entonces el código de respuesta es 201
     Y el estado de la matrícula es "REGISTRADA"
     Y el monto de la matrícula es "576.0"
+    Y la respuesta de matrícula cumple el esquema "matricula.json"
     Cuando pago la matrícula con el método "TARJETA"
     Entonces el código de respuesta es 200
     Y el estado de la matrícula es "PAGADA"
+    Y la matrícula tiene fecha de pago
     Y el pago existe con método "TARJETA" y número de operación válido
 
   Escenario: Regla de negocio que debe fallar - Límite de créditos
     Cuando cotizo los cursos "PS5511", "QA5517", "DM5512", "TS5514", "SA5516" y "BD5410" para el alumno "i202610001"
     Entonces el código de respuesta es 422
     Y el código de error es "LIMITE_CREDITOS"
+    Y la respuesta de matrícula cumple el esquema "error.json"

@@ -11,9 +11,9 @@ Característica: Calificación de matrículas
     Entonces el código de respuesta es 200
     Y el historial muestra condición "<condicion>", <creditos> créditos aprobados y promedio <promedio>
     Ejemplos:
-      | nota | condicion | creditos | promedio |
-      | 11   | APROBADO  | 13       | 13.38    |
-      | 12,5 | APROBADO  | 13       | 14.08    |
+      | nota | condicion   | creditos | promedio |
+      | 11   | DESAPROBADO | 7        | 13,38    |
+      | 12,5 | DESAPROBADO | 7        | 14,08    |
 
   Escenario: Un docente que no dicta el curso intenta registrar la nota
     Dado que el docente "D0002" inicia sesión

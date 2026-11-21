@@ -13,7 +13,6 @@ import pe.edu.cibertec.matricula_api.screenplay.task.IniciarSesion;
 
 import java.util.Map;
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
-import static org.hamcrest.Matchers.equalTo;
 
 public class CalificacionStepDefinitions {
 
@@ -27,13 +26,11 @@ public class CalificacionStepDefinitions {
 
     @Cuando("califico la matrícula de la alumna {string} en el curso {string} con nota {double}")
     public void calificoLaMatricula(String alumno, String curso, double nota) {
-        // Obtener el token de la alumna para buscar su matrícula
         SerenityRest.given().contentType("application/json")
                 .body(Map.of("username", alumno, "password", "Cibertec2026"))
                 .post("http://localhost:8080/api/auth/login");
         String tokenAlumna = SerenityRest.lastResponse().jsonPath().getString("accessToken");
 
-        // Consultar la matrícula
         SerenityRest.given().header("Authorization", "Bearer " + tokenAlumna)
                 .get("http://localhost:8080/api/matriculas?alumno=" + alumno + "&curso=" + curso);
 
@@ -47,7 +44,6 @@ public class CalificacionStepDefinitions {
 
     @Cuando("consulto el historial de la alumna {string}")
     public void consultoElHistorial(String alumno) {
-        // El historial lo consulta la alumna
         SerenityRest.given().contentType("application/json")
                 .body(Map.of("username", alumno, "password", "Cibertec2026"))
                 .post("http://localhost:8080/api/auth/login");
@@ -59,6 +55,6 @@ public class CalificacionStepDefinitions {
 
     @Entonces("el historial muestra condición {string}, {int} créditos aprobados y promedio {double}")
     public void elHistorialMuestra(String condicion, int creditos, double promedio) {
-        actor.should(seeThat(HistorialQuestion.con(creditos, promedio), equalTo(true)));
+        actor.should(seeThat(HistorialQuestion.con(condicion, creditos, promedio)));
     }
 }

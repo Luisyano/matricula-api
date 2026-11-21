@@ -5,25 +5,26 @@ import net.serenitybdd.screenplay.Question;
 import net.serenitybdd.rest.SerenityRest;
 
 public class HistorialQuestion implements Question<Boolean> {
+    private final String condicion;
     private final int creditos;
     private final double promedio;
 
-    public HistorialQuestion(int creditos, double promedio) {
+    public HistorialQuestion(String condicion, int creditos, double promedio) {
+        this.condicion = condicion;
         this.creditos = creditos;
         this.promedio = promedio;
     }
 
-    public static HistorialQuestion con(int creditos, double promedio) {
-        return new HistorialQuestion(creditos, promedio);
+    public static HistorialQuestion con(String condicion, int creditos, double promedio) {
+        return new HistorialQuestion(condicion, creditos, promedio);
     }
 
     @Override
     public Boolean answeredBy(Actor actor) {
-        int creditosActuales = SerenityRest.lastResponse().jsonPath().getInt("creditosAprobados");
-        float promedioActual = SerenityRest.lastResponse().jsonPath().getFloat("promedioPonderado");
-
-        // Retorna true si los créditos y el promedio coinciden (con un margen de error de 0.1)
-        return creditosActuales == creditos
-                && Math.abs(promedioActual - promedio) < 0.1;
+        var json = SerenityRest.lastResponse().jsonPath();
+        String condicionActual = json.getString("cursos.find { it.codigoCurso == 'PI5620' }.condicion");
+        return condicion.equals(condicionActual)
+                && json.getInt("creditosAprobados") == creditos
+                && Math.abs(json.getDouble("promedioPonderado") - promedio) < 0.01;
     }
 }

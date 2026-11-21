@@ -2,7 +2,6 @@ package pe.edu.cibertec.matricula_api.screenplay.stepdefinitions;
 
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
-import io.cucumber.java.es.Entonces;
 import net.serenitybdd.rest.SerenityRest;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
@@ -38,6 +37,13 @@ public class SeguridadStepDefinitions {
         actor.attemptsTo(RenovarToken.con(refresh));
     }
 
+    @Cuando("intento consultar mi perfil con el token nuevo")
+    public void intentoConsultarMiPerfilConElTokenNuevo() {
+        String token = actor.recall("nuevoToken");
+        actor.attemptsTo(Get.resource("/api/auth/perfil")
+                .with(req -> req.header("Authorization", "Bearer " + token)));
+    }
+
     @Cuando("cierro la sesión")
     public void cierroLaSesion() {
         actor.attemptsTo(CerrarSesion.ahora());
@@ -46,14 +52,13 @@ public class SeguridadStepDefinitions {
     @Cuando("consulto mi perfil con el token anterior")
     public void consultoMiPerfilConElTokenAnterior() {
         String token = actor.recall("token");
-        actor.attemptsTo(Get.resource("/api/auth/perfil").with(req -> req.header("Authorization", "Bearer " + token)));
+        actor.attemptsTo(Get.resource("/api/auth/perfil")
+                .with(req -> req.header("Authorization", "Bearer " + token)));
     }
 
-    @Dado("que el alumno {string} intenta iniciar sesión con clave incorrecta 5 veces")
-    public void intentaIniciarSesionConClaveIncorrecta5Veces(String usuario) {
-        for (int i = 0; i < 5; i++) {
-            actor.attemptsTo(IniciarSesion.con(usuario, "ClaveIncorrecta123"));
-        }
+    @Cuando("el alumno {string} intenta iniciar sesión con clave incorrecta en el intento {int}")
+    public void intentaConClaveIncorrectaEnElIntento(String usuario, int intento) {
+        actor.attemptsTo(IniciarSesion.con(usuario, "ClaveIncorrecta123"));
     }
 
     @Cuando("intento iniciar sesión con la clave correcta")
@@ -64,12 +69,7 @@ public class SeguridadStepDefinitions {
     @Cuando("intento listar todos los alumnos")
     public void intentoListarTodosLosAlumnos() {
         String token = actor.recall("token");
-        actor.attemptsTo(Get.resource("/api/alumnos").with(req -> req.header("Authorization", "Bearer " + token)));
-    }
-
-    // Este es el único "Entonces" que es exclusivo de esta clase
-    @Entonces("el quinto intento devuelve código {int}")
-    public void elQuintoIntentoDevuelveCodigo(int codigo) {
-        SerenityRest.lastResponse().then().statusCode(codigo);
+        actor.attemptsTo(Get.resource("/api/alumnos")
+                .with(req -> req.header("Authorization", "Bearer " + token)));
     }
 }
