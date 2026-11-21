@@ -1,28 +1,25 @@
-Feature: : Matricula de cursos
-  Como alumno de CIBERTEC
-  Quiero matricularme en mis cursos
-  Para llevarlos en el ciclo
+# language: es
+Característica: Matrícula del alumno
 
-  Scenario: Matricula valida con descuento por promedio y anulacion
-    Given  que Ana consulta la API de matricula
-    When se matricula con el codigo "i202610001" en el curso "PS3511"
-    Then el codigo de respuesta es 201
-    And el monto de la matricula es 288,0
-    And el estado de la matricula es "REGISTRADA"
-    When anula es matricula
-    Then el codigo de respuesta es 200
-    And el estado de la matricula es "ANULADA"
+  Antecedentes:
+    Dado que el alumno "i202610001" inicia sesión
 
-  Scenario Outline: Matricula rechazada por <motivo>
-    Given  que Ana consulta la API de matricula
-    When se matricula por codigo "<alumno>" en el curso "<curso>"
-    Then el codigo de respuesta es <status>
-    And el codigo de error es "<codigo>"
-    Examples:
-      | motivo             | alumno     | curso  | status | codigo               |
-      | deuda              | i202610004 | PS5511 | 422    | ALUMNO_CON_DEUDA     |
-      | duplicada          | i202610003 | IA5513 | 409    | MATRICULA_DUPLICADA  |
-      | falta de vacantes  | i202610001 | IA5513 | 409    | SIN_VACANTES         |
-      | cruce de horario   | i202610002 | QA5517 | 409    | CRUCE_HORARIO        |
-      | límite de créditos | i202610005 | TS5514 | 422    | LIMITE_CREDITOS      |
-      | alumno inexistente | i999999999 | PS5511 | 404    | ALUMNO_NO_ENCONTRADO |
+  Escenario: Cotizar el curso PI5620
+    Cuando cotizo el curso "PI5620" para el alumno "i202610001"
+    Entonces el código de respuesta es 200
+    Y el total de la cotización es "576.0"
+
+  Escenario: Matricularse y pagar el curso PI5620
+    Cuando matriculo al alumno "i202610001" en el curso "PI5620"
+    Entonces el código de respuesta es 201
+    Y el estado de la matrícula es "REGISTRADA"
+    Y el monto de la matrícula es "576.0"
+    Cuando pago la matrícula con el método "TARJETA"
+    Entonces el código de respuesta es 200
+    Y el estado de la matrícula es "PAGADA"
+    Y el pago existe con método "TARJETA" y número de operación válido
+
+  Escenario: Regla de negocio que debe fallar - Límite de créditos
+    Cuando cotizo los cursos "PS5511", "QA5517", "DM5512", "TS5514", "SA5516" y "BD5410" para el alumno "i202610001"
+    Entonces el código de respuesta es 422
+    Y el código de error es "LIMITE_CREDITOS"
