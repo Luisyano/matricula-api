@@ -30,3 +30,20 @@ El nuevo accessToken es rechazado porque, al intentar reutilizar un refresh toke
 
 **2. ¿Por qué con la clave correcta tampoco puede ingresar después de 5 intentos fallidos?**
 Porque la cuenta se bloquea automáticamente por 15 minutos como mecanismo de protección contra ataques de fuerza bruta. Este bloqueo impide cualquier intento de inicio de sesión, independientemente de si la contraseña ingresada es correcta o no.
+
+
+## Pregunta 3: Calificaciones e historial
+
+### Captura del error con el punto decimal
+![Error del 12.5](captura_error_p3.png)
+
+**Explicación:** El error ocurrió al escribir `12.5` (con punto) en el archivo `.feature`. Debido a la configuración regional de español, el sistema interpretó el punto como separador de miles (enviando 125), lo cual es una nota inválida. La solución es usar `12,5` (con coma) para que el sistema lo reconozca como un decimal.
+
+### Captura final (todo en verde)
+![Captura final P3](captura_final_p3.png)
+
+### Tabla de cálculo del historial
+| Nota en PI5620 | Créditos aprobados | Cálculo del promedio ponderado | Promedio |
+| :--- | :--- | :--- | :--- |
+| 11 | 13 | (15×4 + 16×3 + 11×6) / 13 | 13.38 |
+| 12.5 | 13 | (15×4 + 16×3 + 12.5×6) / 13 | 14.08 |
